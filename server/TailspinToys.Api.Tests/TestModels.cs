@@ -2,8 +2,15 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using TailspinToys.Api.Models;
 
+/*
+ * TestModels.cs
+ * Unit tests for model validation and behavior using an in-memory SQLite database.
+ */
 namespace TailspinToys.Api.Tests;
 
+/// <summary>
+/// Unit tests for model validation rules and persistence behavior.
+/// </summary>
 public class TestModels : IDisposable
 {
     private readonly TailspinToysContext _db;
@@ -28,7 +35,10 @@ public class TestModels : IDisposable
         ["star_rating"] = 4.5
     };
 
-    public TestModels()
+    /// <summary>
+/// Sets up an in-memory SQLite database and ensures schema is created for tests.
+/// </summary>
+public TestModels()
     {
         var options = new DbContextOptionsBuilder<TailspinToysContext>()
             .UseSqlite("Data Source=:memory:")
@@ -41,7 +51,10 @@ public class TestModels : IDisposable
     }
 
     [Fact]
-    public void GameTitle_TooShort_ThrowsValidationError()
+    /// <summary>
+/// Verifies that saving a game with a title shorter than allowed fails validation.
+/// </summary>
+public void GameTitle_TooShort_ThrowsValidationError()
     {
         // Create required publisher and category
         var publisher = new Publisher { Name = ValidPublisher["name"], Description = ValidPublisher["description"] };
@@ -73,7 +86,10 @@ public class TestModels : IDisposable
     }
 
     [Fact]
-    public void GameDescription_TooShort_ThrowsValidationError()
+    /// <summary>
+/// Verifies that saving a game with too-short description fails validation.
+/// </summary>
+public void GameDescription_TooShort_ThrowsValidationError()
     {
         var publisher = new Publisher { Name = ValidPublisher["name"], Description = ValidPublisher["description"] };
         var category = new Category { Name = ValidCategory["name"], Description = ValidCategory["description"] };
@@ -103,7 +119,10 @@ public class TestModels : IDisposable
     }
 
     [Fact]
-    public void ValidGame_CreatesSuccessfully()
+    /// <summary>
+/// Ensures a valid game is persisted successfully and receives an Id.
+/// </summary>
+public void ValidGame_CreatesSuccessfully()
     {
         var publisher = new Publisher { Name = ValidPublisher["name"], Description = ValidPublisher["description"] };
         var category = new Category { Name = ValidCategory["name"], Description = ValidCategory["description"] };
@@ -129,7 +148,10 @@ public class TestModels : IDisposable
     }
 
     [Fact]
-    public void PublisherName_TooShort_ThrowsValidationError()
+    /// <summary>
+/// Verifies that a publisher with a too-short name fails validation when saved.
+/// </summary>
+public void PublisherName_TooShort_ThrowsValidationError()
     {
         var publisher = new Publisher { Name = "X", Description = ValidPublisher["description"] };
 
@@ -146,7 +168,10 @@ public class TestModels : IDisposable
     }
 
     [Fact]
-    public void CategoryName_TooShort_ThrowsValidationError()
+    /// <summary>
+/// Verifies that a category with a too-short name fails validation when saved.
+/// </summary>
+public void CategoryName_TooShort_ThrowsValidationError()
     {
         var category = new Category { Name = "X", Description = ValidCategory["description"] };
 
@@ -163,7 +188,10 @@ public class TestModels : IDisposable
     }
 
     [Fact]
-    public void Description_NullAllowed()
+    /// <summary>
+/// Confirms that null descriptions are allowed for publishers.
+/// </summary>
+public void Description_NullAllowed()
     {
         var publisher = new Publisher { Name = ValidPublisher["name"], Description = null };
         _db.Publishers.Add(publisher);
@@ -173,7 +201,10 @@ public class TestModels : IDisposable
         Assert.Null(publisher.Description);
     }
 
-    public void Dispose()
+    /// <summary>
+/// Disposes the in-memory database context used by tests.
+/// </summary>
+public void Dispose()
     {
         _db.Dispose();
     }

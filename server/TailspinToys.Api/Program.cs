@@ -1,3 +1,7 @@
+/*
+ * Program.cs
+ * Application startup and route registration for the TailspinToys API.
+ */
 using Microsoft.EntityFrameworkCore;
 using TailspinToys.Api;
 using TailspinToys.Api.Routes;
@@ -54,8 +58,12 @@ app.UseCors();
 
 // Register routes
 app.MapGamesRoutes();
+app.MapPublishersRoutes();
 
 app.Run();
 
 // Make Program accessible to test project
+/// <summary>
+/// Placeholder Program class to make the application's entry point testable from integration tests.
+/// </summary>
 public partial class Program { }

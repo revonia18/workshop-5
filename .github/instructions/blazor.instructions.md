@@ -1,3 +1,4 @@
+
 ---
 description: 'Blazor component patterns for pages, layouts, and routing'
 applyTo: '**/*.razor'

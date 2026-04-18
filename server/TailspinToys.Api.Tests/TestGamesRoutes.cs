@@ -8,8 +8,15 @@ using Microsoft.Extensions.DependencyInjection;
 using TailspinToys.Api;
 using TailspinToys.Api.Models;
 
+/*
+ * TestGamesRoutes.cs
+ * Integration tests for game-related API endpoints.
+ */
 namespace TailspinToys.Api.Tests;
 
+/// <summary>
+/// Integration tests covering game endpoints and related behaviors.
+/// </summary>
 public class TestGamesRoutes : IDisposable
 {
     private readonly string _dbPath;
@@ -51,7 +58,10 @@ public class TestGamesRoutes : IDisposable
 
     private const string GamesApiPath = "/api/games";
 
-    public TestGamesRoutes()
+    /// <summary>
+/// Initializes the test web application factory and seeds test data for game tests.
+/// </summary>
+public TestGamesRoutes()
     {
         // Use a temp file-based SQLite DB so all connections naturally share the same data.
         _dbPath = Path.Combine(Path.GetTempPath(), $"TestDb_{Guid.NewGuid()}.db");
@@ -111,7 +121,10 @@ public class TestGamesRoutes : IDisposable
     }
 
     [Fact]
-    public async Task GetGames_ReturnsAllGames()
+    /// <summary>
+/// Verifies GET /api/games returns the complete list of games with related publisher and category.
+/// </summary>
+public async Task GetGames_ReturnsAllGames()
     {
         // Act
         var response = await _client.GetAsync(GamesApiPath);
@@ -143,7 +156,10 @@ public class TestGamesRoutes : IDisposable
     }
 
     [Fact]
-    public async Task GetGames_ReturnsCorrectStructure()
+    /// <summary>
+/// Ensures the game list response contains required fields and structure.
+/// </summary>
+public async Task GetGames_ReturnsCorrectStructure()
     {
         // Act
         var response = await _client.GetAsync(GamesApiPath);
@@ -162,7 +178,10 @@ public class TestGamesRoutes : IDisposable
     }
 
     [Fact]
-    public async Task GetGameById_ReturnsGame()
+    /// <summary>
+/// Verifies GET /api/games/{id} returns the expected game details.
+/// </summary>
+public async Task GetGameById_ReturnsGame()
     {
         // Get the first game's ID and title from the list
         var listResponse = await _client.GetAsync(GamesApiPath);
@@ -191,7 +210,10 @@ public class TestGamesRoutes : IDisposable
     }
 
     [Fact]
-    public async Task GetGameById_NotFound_Returns404()
+    /// <summary>
+/// Ensures requesting a non-existent game id returns 404 with an error message.
+/// </summary>
+public async Task GetGameById_NotFound_Returns404()
     {
         // Act
         var response = await _client.GetAsync($"{GamesApiPath}/999");
@@ -204,7 +226,10 @@ public class TestGamesRoutes : IDisposable
     }
 
     [Fact]
-    public async Task GetGames_EmptyDatabase_ReturnsEmptyList()
+    /// <summary>
+/// Verifies that an empty games table results in an empty list response.
+/// </summary>
+public async Task GetGames_EmptyDatabase_ReturnsEmptyList()
     {
         // Clear all games
         using var scope = _factory.Services.CreateScope();
@@ -223,7 +248,10 @@ public class TestGamesRoutes : IDisposable
     }
 
     [Fact]
-    public async Task GetGameByInvalidId_Returns404()
+    /// <summary>
+/// Confirms an invalid (non-integer) id path returns 404 due to route constraints.
+/// </summary>
+public async Task GetGameByInvalidId_Returns404()
     {
         // Act - invalid-id should not match the {id:int} route
         var response = await _client.GetAsync($"{GamesApiPath}/invalid-id");
@@ -232,7 +260,10 @@ public class TestGamesRoutes : IDisposable
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    public void Dispose()
+    /// <summary>
+/// Performs cleanup after game tests and deletes temporary databases.
+/// </summary>
+public void Dispose()
     {
         _client.Dispose();
         _factory.Dispose();
